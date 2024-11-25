@@ -18,7 +18,6 @@ from shinywidgets import render_altair, output_widget
 import numpy as np
 from googletrans import Translator
 import os
-import statsmodels.api as sm
 ```
 
 # Renewable Energy (%) by Province (2012 and 2022)
@@ -525,14 +524,14 @@ scatter_plot_final
 # 10-Year Average Renewable Energy (%) by Province (2012-2022)
 ```{python}
 # Load the shapefile and renewable energy data
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/ChinaAdminDivisonSHP/2. Province/province.shp" 
+province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 china_map
 ```
 
 ```{python}
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/ChinaAdminDivisonSHP/2. Province/province.shp" 
+province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 # Step 1: Translate the `pr_name` column from Chinese to English
@@ -594,7 +593,7 @@ china_map_translated
 ```
 
 ```{python}
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/ChinaAdminDivisonSHP/2. Province/translated_province.shp"
+province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/translated_province.shp"
 china_map_translated = gpd.read_file(province_shp_path)
 
 # Merge shapefile with renewable energy data
