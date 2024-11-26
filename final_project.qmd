@@ -219,6 +219,7 @@ national_12to22['Province'] = 'Nationwide'
 combined_data = pd.concat([province_12to22, national_12to22], ignore_index=True)
 
 ```
+
 ```{python}
 combined_data.to_csv("combined_data.csv", index = False)
 ```
@@ -291,6 +292,7 @@ cec_data = pd.read_csv(cec_path)
 cec_data.head()
 ```
 
+
 ```{python}
 filtered_cec_data = cec_data[(cec_data['Year'] >= 2012) & (cec_data['Year'] <= 2022)]
 
@@ -318,7 +320,9 @@ cec_12to22_chart = alt.Chart(national_cec_12to22).mark_line(point=True).encode(
 
 cec_12to22_chart
 ```
+```{python}
 
+```
 # Nationwide Carbon Emissions per GDP from 2012 to 2022
 ```{python}
 gdp_path = 'gdp_china.csv'
@@ -350,9 +354,14 @@ cec_gdp_merged['Carbon Emissions per GDP'] = (
     cec_gdp_merged['Carbon emissions (10,000 tons)']*1000 / (cec_gdp_merged['GDP']*10000)
 )
 
-cec_gdp_merged.head()
+cec_gdp_merged
 ```
-
+```{python}
+cec_gdp_merged.to_csv("gdp_merged.csv", index = False)
+```
+```{python}
+annual_carbon_per_gdp.to_csv("gdp_merged.csv", index = False)
+```
 ```{python}
 # Aggregate carbon emissions per GDP for each year by summing up across provinces
 annual_carbon_per_gdp = cec_gdp_merged.groupby('Year').agg({
@@ -429,6 +438,9 @@ cepg_chart_final = alt.layer(
 )
 
 cepg_chart_final
+```
+```{python}
+annual_carbon_per_gdp.to_csv("carbon_annual.csv", index = False)
 ```
 
 # Relationship between Renewable Energy (%) and Carbon Emissions per GDP by Province (2012-2022)

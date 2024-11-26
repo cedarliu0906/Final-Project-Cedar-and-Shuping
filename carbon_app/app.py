@@ -54,6 +54,7 @@ def server(input, output, session):
             width=800,
             height=400
         )
+        
         line_rec_12to22 = alt.Chart(plot_data).mark_line(point=True).encode(
             color=alt.value('#238b45'),
             x=alt.X('Year:O', title='Year'),
@@ -89,7 +90,7 @@ def server(input, output, session):
             color='gray',
             strokeWidth=2
         ).encode(
-            x=alt.X('Year:O', title=None),  
+            x=alt.X('Year:O'),  
             y='y:Q' 
         )
 
@@ -114,7 +115,7 @@ def server(input, output, session):
             width=800,
             height=400
         ).configure_axis(
-            grid=False  
+            grid=True  
         ).configure_axisY(
             format='',  
             title='Renewable Energy (%)'  
