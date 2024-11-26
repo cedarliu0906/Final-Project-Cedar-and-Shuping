@@ -22,14 +22,14 @@ import os
 
 # Renewable Energy (%) by Province (2012 and 2022)
 ```{python}
-rec_path = 'D:/Github/Final-Project-Cedar-and-Shuping/renewable_energy_china.csv'
+rec_path = 'renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 rec_data.head()
 ```
 
 ```{python}
-rec_path = 'D:/Github/Final-Project-Cedar-and-Shuping/renewable_energy_china.csv'
+rec_path = 'renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Convert the column to numeric after removing the percentage symbol
@@ -78,7 +78,7 @@ overlay_rec_2012_2022_chart
 
 # Nationwide Renewable Energy (%) from 2012 to 2022
 ```{python}
-rec_path = 'D:/Github/Final-Project-Cedar-and-Shuping/renewable_energy_china.csv'
+rec_path = 'renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Filter data for years from 2012 to 2022
@@ -170,7 +170,7 @@ line_rec_12to22_final
 
 # Renewable Energy (%) from 2012 to 2022: Nationwide and Provinces Interactively
 ```{python}
-rec_path = 'D:/Github/Final-Project-Cedar-and-Shuping/renewable_energy_china.csv'
+rec_path = 'renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Filter data for years from 2012 to 2022
@@ -283,7 +283,7 @@ print("app.py has been saved successfully.")
 
 # Nationwide Carbon Emissions from 2012 to 2022
 ```{python}
-cec_path = 'D:/Github/Final-Project-Cedar-and-Shuping/carbon_emission_china.csv'
+cec_path = 'carbon_emission_china.csv'
 cec_data = pd.read_csv(cec_path)
 
 cec_data.head()
@@ -319,7 +319,7 @@ cec_12to22_chart
 
 # Nationwide Carbon Emissions per GDP from 2012 to 2022
 ```{python}
-gdp_path = 'D:/Github/Final-Project-Cedar-and-Shuping/gdp_china.csv'
+gdp_path = 'gdp_china.csv'
 gdp_data = pd.read_csv(gdp_path)
 ```
 
@@ -524,14 +524,14 @@ scatter_plot_final
 # 10-Year Average Renewable Energy (%) by Province (2012-2022)
 ```{python}
 # Load the shapefile and renewable energy data
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/province.shp" 
+province_shp_path = "Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 china_map
 ```
 
 ```{python}
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/province.shp" 
+province_shp_path = "Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 # Step 1: Translate the `pr_name` column from Chinese to English
