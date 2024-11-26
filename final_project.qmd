@@ -219,7 +219,9 @@ national_12to22['Province'] = 'Nationwide'
 combined_data = pd.concat([province_12to22, national_12to22], ignore_index=True)
 
 ```
-
+```{python}
+combined_data.to_csv("combined_data.csv", index = False)
+```
 ```{python}
 # not sure how to code this part
 app_code="""
@@ -585,7 +587,7 @@ china_map["pr_name_en"] = china_map["pr_name_en"].replace(replacements)
 china_map_translated = china_map.rename(columns={"pr_name_en": "Province"})
 
 # Optional: Save the updated GeoDataFrame to a new shapefile
-china_map_translated.to_file("D:/Github/Final-Project-Cedar-and-Shuping/ChinaAdminDivisonSHP/2. Province/translated_province.shp", driver="ESRI Shapefile")
+china_map_translated.to_file("Province/translated_province.shp", driver="ESRI Shapefile")
 
 # Display the updated GeoDataFrame
 china_map_translated
@@ -593,7 +595,7 @@ china_map_translated
 ```
 
 ```{python}
-province_shp_path = "D:/Github/Final-Project-Cedar-and-Shuping/Province/translated_province.shp"
+province_shp_path = "Province/translated_province.shp"
 china_map_translated = gpd.read_file(province_shp_path)
 
 # Merge shapefile with renewable energy data
