@@ -679,3 +679,24 @@ cec_map_chart = alt.Chart(alt.Data(values=china_map_carbon_geojson["features"]))
 
 cec_map_chart
 ```
+```{python}
+file_sentiment = 'sentiment_analysis_results.csv'
+df_sentiments = pd.read_csv(file_sentiment)
+df_sentiments['year'] = df_sentiments['filename'].str.extract(r'(\d{4})').astype(int)
+```
+```{python}
+score_chart = alt.Chart(df_sentiments).mark_line(point=True).encode(
+    color=alt.value('#cc0000'),
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('score:Q', title='Sentiment Score'),
+    tooltip=[
+        alt.Tooltip('filename:O', title='Year'),
+        alt.Tooltip('score:Q', title='Sentiment Score', format=',.2f')
+    ]
+).properties(
+    title='Sentiment Scores Over the Years',
+    width=600,
+    height=400
+)
+score_chart
+```
