@@ -22,14 +22,14 @@ import os
 
 # Renewable Energy (%) by Province (2012 and 2022)
 ```{python}
-rec_path = 'renewable_energy_china.csv'
+rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 rec_data.head()
 ```
 
 ```{python}
-rec_path = 'renewable_energy_china.csv'
+rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Convert the column to numeric after removing the percentage symbol
@@ -78,7 +78,7 @@ overlay_rec_2012_2022_chart
 
 # Nationwide Renewable Energy (%) from 2012 to 2022
 ```{python}
-rec_path = 'renewable_energy_china.csv'
+rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Filter data for years from 2012 to 2022
@@ -170,7 +170,7 @@ line_rec_12to22_final
 
 # Renewable Energy (%) from 2012 to 2022: Nationwide and Provinces Interactively
 ```{python}
-rec_path = 'renewable_energy_china.csv'
+rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
 
 # Filter data for years from 2012 to 2022
@@ -286,7 +286,7 @@ print("app.py has been saved successfully.")
 
 # Nationwide Carbon Emissions from 2012 to 2022
 ```{python}
-cec_path = 'carbon_emission_china.csv'
+cec_path = './data/carbon_emission_china.csv'
 cec_data = pd.read_csv(cec_path)
 
 cec_data.head()
@@ -325,7 +325,7 @@ cec_12to22_chart
 ```
 # Nationwide Carbon Emissions per GDP from 2012 to 2022
 ```{python}
-gdp_path = 'gdp_china.csv'
+gdp_path = './data/gdp_china.csv'
 gdp_data = pd.read_csv(gdp_path)
 ```
 
@@ -538,14 +538,14 @@ scatter_plot_final
 # 10-Year Average Renewable Energy (%) by Province (2012-2022)
 ```{python}
 # Load the shapefile and renewable energy data
-province_shp_path = "Province/province.shp" 
+province_shp_path = "./data/Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 china_map
 ```
 
 ```{python}
-province_shp_path = "Province/province.shp" 
+province_shp_path = "./data/Province/province.shp" 
 china_map = gpd.read_file(province_shp_path)
 
 # Step 1: Translate the `pr_name` column from Chinese to English
@@ -599,7 +599,7 @@ china_map["pr_name_en"] = china_map["pr_name_en"].replace(replacements)
 china_map_translated = china_map.rename(columns={"pr_name_en": "Province"})
 
 # Optional: Save the updated GeoDataFrame to a new shapefile
-china_map_translated.to_file("Province/translated_province.shp", driver="ESRI Shapefile")
+china_map_translated.to_file("./data/Province/translated_province.shp", driver="ESRI Shapefile")
 
 # Display the updated GeoDataFrame
 china_map_translated
@@ -607,7 +607,7 @@ china_map_translated
 ```
 
 ```{python}
-province_shp_path = "Province/translated_province.shp"
+province_shp_path = "./data/Province/translated_province.shp"
 china_map_translated = gpd.read_file(province_shp_path)
 
 # Merge shapefile with renewable energy data
@@ -700,3 +700,5 @@ score_chart = alt.Chart(df_sentiments).mark_line(point=True).encode(
 )
 score_chart
 ```
+The link to the finetuned bert model is located at the drive https://drive.google.com/drive/folders/1ABBAj0q0FpWj9zlk0-HfOOfo6XHfRGf1?usp=sharing, 
+as well as the necessary coding setups.
