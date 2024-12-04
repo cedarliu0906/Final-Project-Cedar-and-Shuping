@@ -18,36 +18,17 @@ The key research question is: **To what extent have China's energy policies infl
 
 ## Research Approach
 
-To address this question, we:
+The analysis involved compiling datasets on China's renewable energy adoption (2012–2022) and carbon emissions per GDP by province. Geographical data was integrated using shapefiles to facilitate visualizations. Nationwide trends and provincial variations in renewable energy percentage and carbon emissions were assessed, and regression analysis was conducted to explore the relationship between renewable energy adoption and carbon emissions. Visualizations were developed using both static and interactive tools, including Shiny applications for dynamic analysis. The data preparation process required significant preprocessing, particularly for provincial data translation and merging, and relied on proxies for some renewable energy types due to measurement limitations.
 
-### 1. Data Preparation
-- Compiled datasets on China's renewable energy (2012–2022) and carbon emissions per GDP by province.
-- Integrated geographical data using shapefiles to create visualizations.
-
-### 2. Analysis
-- Assessed nationwide trends and provincial variations in renewable energy (%) and carbon emissions per GDP.
-- Conducted regression analysis to determine relationships between renewable energy adoption and carbon emissions.
-
-### 3. Visualization
-- Developed interactive Shiny applications for user-driven analysis of energy trends.
-- Created static and dynamic maps, line graphs, and scatterplots for trend visualization.
-
-### 4. Limitations and Challenges
-- Some provinces' data translation and merging required significant preprocessing.
-- Dependence on proxies for renewable energy estimation, as not all renewable energy types were directly measured.
 
 ## Findings
 
 ### 1. National Renewable Energy Growth (2012–2022)
-**Visual representation of the line graph here.**
+![Image1](./pictures/visualization7.png){width=50%}
 
-#### Key Insights
-- Renewable energy increased steadily nationwide, driven by hydropower and solar energy expansion.
-- The percentage rose from X% in 2012 to Y% in 2022, achieving significant policy targets set in 2012.
 
-#### Policy Implications
-- Demonstrates the effectiveness of centralized investments in hydropower and solar energy.
-- Encourages continuation of subsidies and grid development for renewables.
+Renewable energy adoption increased steadily over the decade, driven primarily by hydropower and solar energy expansion. The share of renewable energy rose from X% in 2012 to Y% in 2022, achieving significant policy targets set in 2012. This growth highlights the effectiveness of centralized investments in hydropower and solar energy and underscores the importance of continuing subsidies and grid development to support renewables.
+
 
 ### 2. Provincial Renewable Energy Trends
 **Static map and interactive line graph for provincial trends.**
@@ -61,7 +42,7 @@ To address this question, we:
 - Provincial disparities highlight the need for region-specific incentives.
 
 ### 3. Relationship Between Renewable Energy and Carbon Emissions per GDP
-**Scatterplot with regression line.**
+![Image1](./pictures/visualization4.png){width=50%}
 
 #### Key Insights
 - Strong negative correlation between renewable energy adoption and carbon emissions per GDP.
