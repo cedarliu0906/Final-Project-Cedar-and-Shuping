@@ -18,37 +18,53 @@ The key research question is: **To what extent have China's energy policies infl
 
 ## Research Approach
 
-The analysis involved compiling datasets on China's renewable energy adoption (2012–2022) and carbon emissions per GDP by province, from China Energy Statistical Yearbook. Geographical data was integrated using shapefiles to facilitate visualizations. Nationwide trends and provincial variations in renewable energy percentage and carbon emissions were assessed, and analysis was conducted to explore the relationship between renewable energy adoption and carbon emissions. Visualizations were developed using both static and interactive tools, including Shiny applications for dynamic analysis. The data preparation process required significant preprocessing, particularly for provincial data translation and merging, and relied on proxies for some renewable energy types due to measurement limitations.
+The analysis involved compiling datasets on China's renewable energy adoption (2012–2022) and carbon emissions per GDP by province, from China Energy Statistical Yearbook. Geographical data was integrated using shapefiles to facilitate visualizations. Nationwide trends and provincial variations in renewable energy percentage and carbon emissions were assessed, and analysis was conducted to explore the relationship between renewable energy adoption and carbon emissions. Visualizations were developed using both static and interactive tools, including Shiny applications for dynamic analysis.
+
+We also utilized Natural Language Processing tools to validate and deepen our analysis. Official documents on renewable energy, environmental protection, and carbon neutrality issued by the State Council of the PRC were used to fine-tune the bert-base-chinese model.
+With the fine-tuned model, we analyzed the annual Report on the Work of the Government from the State Council to cross-validate findings from earlier data analysis and visualization.
 
 
 ## Findings
 
-### 1. National and Provincial Renewable Energy Growth (2012–2022)
-![geoplot](./pictures/visualization6.png){width=50%}
-![shinyapp screenshot](./pictures/Screenshot1.png){width=50%}
+### National and Provincial Renewable Energy Growth (2012–2022)
+![geoplot1](./pictures/visualization6.png){width=50%}
+![shinyapp screenshot1](./pictures/Screenshot1.png){width=50%}
 
 
-Renewable energy adoption increased steadily over the decade, driven primarily by hydropower and solar energy expansion. The share of renewable energy rose from 4.40% in 2012 to 18.10% in 2022, achieving significant policy targets set in 2012. This growth highlights the effectiveness of centralized investments in hydropower and solar energy and underscores the importance of continuing subsidies and grid development to support renewables.
+**Renewable energy adoption increased steadily over the decade, driven primarily by hydropower and solar energy expansion.** 
+The share of renewable energy rose from 4.40% in 2012 to 18.10% in 2022, achieving significant policy targets set in 2012. This growth highlights the effectiveness of centralized investments in hydropower and solar energy and underscores the importance of continuing subsidies and grid development to support renewables.
 
-The geograph shows regional disparities and outliers reveal underlying complexities. For example, Qinghai, Tibet, and Gansu stand out with the darkest green shades, reflecting the highest average renewable energy percentages due to abundant natural resources like hydropower and solar energy. Coastal provinces such as Zhejiang, Guangdong, and Fujian exhibit moderate renewable energy adoption, constrained by their significant industrial bases that limit the share of renewables compared to total energy consumption. In contrast, eastern provinces like Shanghai, Jiangsu, and Shandong are among the lightest-shaded regions, indicating lower average renewable energy percentages due to their heavy reliance on fossil fuels to meet the demands of dense urban and industrial populations.
+**The geograph shows regional disparities and outliers reveal underlying complexities.**
+For example, Qinghai, Tibet, and Gansu stand out with the darkest green shades, reflecting the highest average renewable energy percentages due to abundant natural resources like hydropower and solar energy. Coastal provinces such as Zhejiang, Guangdong, and Fujian exhibit moderate renewable energy adoption, constrained by their significant industrial bases that limit the share of renewables compared to total energy consumption. In contrast, eastern provinces like Shanghai, Jiangsu, and Shandong are among the lightest-shaded regions, indicating lower average renewable energy percentages due to their heavy reliance on fossil fuels to meet the demands of dense urban and industrial populations.
 
 
-### 2. Relationship Between Renewable Energy and Carbon Emissions per GDP
-![Image1](./pictures/visualization4.png){width=50%}
+### Relationship Between Renewable Energy and Carbon Emissions per GDP
+![scatterplot](./pictures/visualization4.png){width=70%}
+
+![geoplot2](./pictures/visualization7.png){width=50%}
+![shinyapp screenshot2](./pictures/Screenshot2.png){width=50%}
+
+**There's a steady decline in carbon emissions per unit of GDP from 2012 to 2022, marking a 35.39% reduction over the period.**
+This trend signifies progress in decoupling economic growth from carbon emissions, indicating a more energy-efficient economy. The increased share of renewable energy has contributed significantly to this decline, showcasing the effectiveness of policy interventions aimed at energy efficiency and clean energy transition.
+
+**The geograph shows the same regional disparities as the energy one.** 
+Inner Mongolia, Shanxi, and Ningxia exhibit the darkest red shades, signifying the highest carbon emissions per GDP. These provinces are known for their reliance on coal mining and thermal power generation, which contribute to higher carbon intensity. Southern and coastal provinces such as Guangdong, Zhejiang, and Fujian feature lighter red shades, reflecting better carbon efficiency. These provinces benefit from nuclear energy integration and energy-efficient industrial practices. These provinces are also the outliers in the scatterplot.
+
+### Sentiment Analysis on the State Council Report
+![NLP analysis](./pictures/visualization5.png){width=50%}
+
+The sentiment scores over the years correspond closely to our previous findings in the data visualization phase, confirming the increasing focus on energy-related topics and policies. While the slight drops in 2021 and 2022 might seem concerning, these can be attributed to the COVID-19 outbreak, as the government reports understandably allocated significant attention to pandemic response and recovery efforts, thereby reducing the emphasis on energy-related content during these years.
 
 ## Policy Implications
 
-China’s energy policies have successfully fostered renewable energy adoption and reduced carbon intensity, aligning with its international commitments. However, regional disparities and coal dependency in inner provinces remain significant barriers. Enhanced support for lagging regions and diversification of renewable energy types can further strengthen progress.
+The significant progress in renewable energy expansion across most provinces validates the effectiveness of China’s nationwide energy policies. However, tailored strategies are essential to address the challenges faced by low-performing provinces, particularly those heavily reliant on coal. Targeted policies and incentives can help these regions transition to renewable energy, reducing dependency on fossil fuels.
+
+Geographical factors have also played a role, with coastal provinces leveraging nuclear energy more effectively due to their natural advantages. This underscores the need for region-specific planning and incentives to address provincial disparities. Overall, these findings highlight renewable energy as a viable pathway to carbon efficiency, supporting the scaling up of renewables to meet international climate commitments. While China’s policies have successfully fostered renewable energy adoption and reduced carbon intensity, enhanced support for lagging regions and diversification of renewable energy types will be crucial for sustaining progress.
 
 ## Future Directions
 
-### 1. Data Improvements
 - Develop finer-grained data on renewable energy types (e.g., wind, solar).
 - Incorporate economic and industrial variables for a more nuanced analysis.
-
-### 2. Policy Expansion
 - Explore offshore wind and distributed solar energy as emerging areas.
 - Increase investment in grid modernization to accommodate renewable sources.
-
-### 3. Interactive Tools
-- Expand Shiny applications for global comparisons and predictive modeling.
+- Integrate Shiny applications for global comparisons and predictive modeling.
