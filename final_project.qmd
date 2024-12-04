@@ -88,7 +88,8 @@ filtered_12to22 = rec_data[(rec_data['Year'] >= 2012) & (rec_data['Year'] <= 202
 national_12to22 = filtered_12to22.groupby('Year').agg({
     'Electricity production (billion kilowatt-hours)': 'sum',
     'Hydropower (billion kilowatt-hours)': 'sum',
-    'Thermal power generation (billion kilowatt-hours)': 'sum'
+    'Thermal power generation (billion kilowatt-hours)': 'sum',
+    'Electricity production (billion kilowatt-hours)': 'sum'
 }).reset_index()
 
 # Calculate Hydro (%) and Thermal (%) using the correct denominators
@@ -166,6 +167,57 @@ line_rec_12to22_final = alt.layer(
 )
 
 line_rec_12to22_final
+```
+```{python}
+line_rec_12to22_total = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#000000'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Electricity production (billion kilowatt-hours):Q', title='Total Energy Production', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Electricity production (billion kilowatt-hours):Q', title='Total Energy Production', format='')
+    ]
+).properties(
+    title='Nationwide Total Energy Production from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_total
+```
+```{python}
+line_rec_12to22_thermal = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#8e1600'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Thermal (%):Q', title='Thermal Energy Fraction', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Thermal (%):Q', title='Thermal Energy Fraction', format='')
+    ]
+).properties(
+    title='Nationwide Thermal Energy Fraction from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_thermal
+```
+```{python}
+line_rec_12to22_hydro = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#2a9df4'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Hydro (%):Q', title='Hydro Energy Fraction', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Hydro (%):Q', title='Hydro Energy Fraction', format='')
+    ]
+).properties(
+    title='Nationwide Hydro Energy Fraction from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_hydro
 ```
 
 # Renewable Energy (%) from 2012 to 2022: Nationwide and Provinces Interactively
