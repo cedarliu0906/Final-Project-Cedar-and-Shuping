@@ -9,7 +9,7 @@ from shinywidgets import render_altair, output_widget
 import os
 
 
-file_path = "../combined_data.csv"
+file_path = "../../combined_data.csv"
 
 # Load the CSV file
 combined_data = pd.read_csv(file_path)

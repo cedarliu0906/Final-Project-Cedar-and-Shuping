@@ -9,8 +9,8 @@ from shinywidgets import render_altair, output_widget
 import os
 
 
-file_path1 = "../gdp_merged.csv"
-file_path2 = "../carbon_annual.csv"
+file_path1 = "../../gdp_merged.csv"
+file_path2 = "../../carbon_annual.csv"
 # Load the CSV file
 combined_data = pd.read_csv(file_path1)
 annual_nation = pd.read_csv(file_path2)
