@@ -1,0 +1,9 @@
+---
+title: "Carbon Neutrality and Geographic Implication: Evidence in China"
+author: "Cedar Liu and Shuping Wu" 
+date: "today"
+format: pdf
+execute:
+  eval: false
+  echo: false
+---
