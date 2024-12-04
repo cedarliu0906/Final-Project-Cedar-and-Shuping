@@ -732,7 +732,7 @@ cec_map_chart = alt.Chart(alt.Data(values=china_map_carbon_geojson["features"]))
 cec_map_chart
 ```
 ```{python}
-file_sentiment = 'sentiment_analysis_results.csv'
+file_sentiment = './data/sentiment_analysis_results.csv'
 df_sentiments = pd.read_csv(file_sentiment)
 df_sentiments['year'] = df_sentiments['filename'].str.extract(r'(\d{4})').astype(int)
 ```
@@ -752,5 +752,5 @@ score_chart = alt.Chart(df_sentiments).mark_line(point=True).encode(
 )
 score_chart
 ```
-The link to the finetuned bert model is located at the drive https://drive.google.com/drive/folders/1ABBAj0q0FpWj9zlk0-HfOOfo6XHfRGf1?usp=sharing, 
+The link to the finetuned bert model is on the drive https://drive.google.com/drive/folders/1ABBAj0q0FpWj9zlk0-HfOOfo6XHfRGf1?usp=sharing, 
 as well as the necessary coding setups.
