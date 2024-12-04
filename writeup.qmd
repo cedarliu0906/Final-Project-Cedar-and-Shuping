@@ -1,9 +1,97 @@
 ---
-title: "Carbon Neutrality and Geographic Implication: Evidence in China"
+title: "China's Renewable Energy and Carbon Emissions Practices: A 10-year Review on China's Energy Policy White Paper 2012"
 author: "Cedar Liu and Shuping Wu" 
-date: "today"
-format: pdf
+format: 
+  pdf:
+    documentclass: article
+    number-sections: true
+    geometry: "margin=0.8in"
 execute:
   eval: false
   echo: false
 ---
+## Introduction
+
+China’s 2012 Energy Policy White Paper outlined a transformative energy strategy to reduce carbon emissions, enhance renewable energy integration, and support sustainable development. This review evaluates the policy’s effectiveness over a decade, focusing on renewable energy adoption and its impact on carbon emissions per GDP.
+
+The key research question is: **To what extent have China's energy policies influenced renewable energy adoption and reduced carbon emissions intensity at national and provincial levels?**
+
+## Research Approach
+
+To address this question, we:
+
+### 1. Data Preparation
+- Compiled datasets on China's renewable energy (2012–2022) and carbon emissions per GDP by province.
+- Integrated geographical data using shapefiles to create visualizations.
+
+### 2. Analysis
+- Assessed nationwide trends and provincial variations in renewable energy (%) and carbon emissions per GDP.
+- Conducted regression analysis to determine relationships between renewable energy adoption and carbon emissions.
+
+### 3. Visualization
+- Developed interactive Shiny applications for user-driven analysis of energy trends.
+- Created static and dynamic maps, line graphs, and scatterplots for trend visualization.
+
+### 4. Limitations and Challenges
+- Some provinces' data translation and merging required significant preprocessing.
+- Dependence on proxies for renewable energy estimation, as not all renewable energy types were directly measured.
+
+## Findings
+
+### 1. National Renewable Energy Growth (2012–2022)
+**Visual representation of the line graph here.**
+
+#### Key Insights
+- Renewable energy increased steadily nationwide, driven by hydropower and solar energy expansion.
+- The percentage rose from X% in 2012 to Y% in 2022, achieving significant policy targets set in 2012.
+
+#### Policy Implications
+- Demonstrates the effectiveness of centralized investments in hydropower and solar energy.
+- Encourages continuation of subsidies and grid development for renewables.
+
+### 2. Provincial Renewable Energy Trends
+**Static map and interactive line graph for provincial trends.**
+
+#### Key Insights
+- Coastal provinces led in renewable energy adoption, driven by wind and solar capacity.
+- Inner provinces with coal-heavy energy mixes showed slower renewable integration.
+
+#### Policy Implications
+- Tailored strategies are necessary for coal-reliant regions to increase renewables.
+- Provincial disparities highlight the need for region-specific incentives.
+
+### 3. Relationship Between Renewable Energy and Carbon Emissions per GDP
+**Scatterplot with regression line.**
+
+#### Key Insights
+- Strong negative correlation between renewable energy adoption and carbon emissions per GDP.
+- Log-transformation showed that a 10% increase in renewables correlates with a significant X% decrease in carbon intensity.
+
+#### Policy Implications
+- Validates renewable energy as a pathway to carbon efficiency.
+- Supports scaling up renewable energy to meet international climate commitments.
+
+### 4. Interactive Visualization through Shiny
+**Screenshot or description of the Shiny app.**
+
+#### Features
+- Drop-down menus allow selection by year and province.
+- Displays renewable energy (%) and carbon emissions per GDP interactively.
+- Encourages public and policy engagement with real-time data.
+
+## Policy Implications
+
+China’s energy policies have successfully fostered renewable energy adoption and reduced carbon intensity, aligning with its international commitments. However, regional disparities and coal dependency in inner provinces remain significant barriers. Enhanced support for lagging regions and diversification of renewable energy types can further strengthen progress.
+
+## Future Directions
+
+### 1. Data Improvements
+- Develop finer-grained data on renewable energy types (e.g., wind, solar).
+- Incorporate economic and industrial variables for a more nuanced analysis.
+
+### 2. Policy Expansion
+- Explore offshore wind and distributed solar energy as emerging areas.
+- Increase investment in grid modernization to accommodate renewable sources.
+
+### 3. Interactive Tools
+- Expand Shiny applications for global comparisons and predictive modeling.
