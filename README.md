@@ -40,4 +40,4 @@ This repository contains files and folders essential for the project, organized 
 
 ---
 
-Feel free to reach out for further clarification or additional resources! shupingw@uchicago.edu
+Feel free to reach out for further clarification or additional resources! shupingw@uchicago.edu, cedarliu@uchicago.edu
