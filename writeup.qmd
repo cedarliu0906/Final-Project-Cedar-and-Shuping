@@ -68,3 +68,681 @@ Geographical factors have also played a role, with coastal provinces leveraging 
 - Explore offshore wind and distributed solar energy as emerging areas.
 - Increase investment in grid modernization to accommodate renewable sources.
 - Integrate Shiny applications for global comparisons and predictive modeling.
+
+```{python}
+import pandas as pd
+import geopandas as gpd
+import altair as alt
+from shiny import App, render, ui
+from shinywidgets import render_altair, output_widget
+import numpy as np
+from googletrans import Translator
+import os
+```
+
+```{python}
+rec_path = './data/renewable_energy_china.csv'
+rec_data = pd.read_csv(rec_path)
+
+rec_data.head()
+```
+
+```{python}
+rec_path = './data/renewable_energy_china.csv'
+rec_data = pd.read_csv(rec_path)
+
+# Convert the column to numeric after removing the percentage symbol
+rec_data['Renewable energy (%)'] = rec_data['Renewable energy (%)'].str.rstrip('%').astype(float)
+
+# Filter data for 2012 and 2022
+rec_2012_2022 = rec_data[rec_data['Year'].isin([2012, 2022])]
+
+# Pivot the data for plotting
+pivot_rec_2012_2022 = rec_2012_2022.pivot(index='Province', columns='Year', values='Renewable energy (%)').reset_index()
+
+# Add a column for the increase between 2012 and 2022
+pivot_rec_2012_2022['Increase (2022-2012)'] = pivot_rec_2012_2022[2022] - pivot_rec_2012_2022[2012]
+
+# Rename columns to strings
+pivot_rec_2012_2022.rename(columns={2012: 'Base (2012)', 2022: 'Present (2022)'}, inplace=True)
+
+# Base bar chart for 2012
+base_rec_2012_2022_chart = alt.Chart(pivot_rec_2012_2022).mark_bar().encode(
+    color=alt.value('#e5f5e0'),
+    x=alt.X('Province:N', sort=alt.EncodingSortField(field='Present (2022)', order='descending'), title='Province'),
+    y=alt.Y('Base (2012):Q', title='Renewable Energy (%)'),
+    tooltip=['Province', 'Base (2012)']
+)
+
+# Overlay bar chart for 2022
+Present_rec_2012_2022_chart = alt.Chart(pivot_rec_2012_2022).mark_bar().encode(
+    color=alt.value('#238b45'),
+    x=alt.X('Province:N', sort=alt.EncodingSortField(field='Present (2022)', order='descending'), title='Province'),
+    y=alt.Y('Present (2022):Q', title='Renewable Energy (%)'),
+    tooltip=['Province', 'Present (2022)']
+)
+
+# Combine the two charts
+overlay_rec_2012_2022_chart = Present_rec_2012_2022_chart + base_rec_2012_2022_chart
+overlay_rec_2012_2022_chart = overlay_rec_2012_2022_chart.properties(
+    title='Renewable Energy (%) by Province (2012 and 2022)',
+    width=800,
+    height=400
+).configure_axis(
+    grid=False  
+)
+
+overlay_rec_2012_2022_chart
+```
+
+```{python}
+rec_path = './data/renewable_energy_china.csv'
+rec_data = pd.read_csv(rec_path)
+
+# Filter data for years from 2012 to 2022
+filtered_12to22 = rec_data[(rec_data['Year'] >= 2012) & (rec_data['Year'] <= 2022)]
+
+# Group data by year and calculate total production values for each year
+national_12to22 = filtered_12to22.groupby('Year').agg({
+    'Electricity production (billion kilowatt-hours)': 'sum',
+    'Hydropower (billion kilowatt-hours)': 'sum',
+    'Thermal power generation (billion kilowatt-hours)': 'sum',
+    'Electricity production (billion kilowatt-hours)': 'sum'
+}).reset_index()
+
+# Calculate Hydro (%) and Thermal (%) using the correct denominators
+national_12to22['Hydro (%)'] = national_12to22['Hydropower (billion kilowatt-hours)'] / national_12to22['Electricity production (billion kilowatt-hours)']
+national_12to22['Thermal (%)'] = national_12to22['Thermal power generation (billion kilowatt-hours)'] / national_12to22['Electricity production (billion kilowatt-hours)']
+
+# Calculate nationwide renewable energy percentage
+national_12to22['Renewable energy (%)'] = (1 - national_12to22['Hydro (%)'] - national_12to22['Thermal (%)'])*100
+
+# Values for key data points
+renewable_2012 = national_12to22.loc[national_12to22['Year'] == 2012, 'Renewable energy (%)'].values[0]
+renewable_2022 = national_12to22.loc[national_12to22['Year'] == 2022, 'Renewable energy (%)'].values[0]
+changes_text_12to22 = f"{(renewable_2022 - renewable_2012):.2f}% percentage points increased"
+
+# Create a line graph showing nationwide renewable energy (%) from 2012 to 2022
+line_rec_12to22 = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#238b45'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Renewable energy (%):Q', title='Nationwide Renewable Energy (%)', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Renewable energy (%):Q', title='Renewable Energy (%)', format='')
+    ]
+)
+
+# Create the horizontal dashed line using a constant y-value for the 2012 renewable energy
+horizontal_line_12 = alt.Chart(pd.DataFrame({
+    'Year': national_12to22['Year'],
+    'y': [renewable_2012] * len(national_12to22)  
+})).mark_line(
+    strokeDash=[4, 4],
+    color='gray'
+).encode(
+    x='Year:O',
+    y='y:Q'
+)
+
+# Create the vertical line explicitly tied to the 2022 data point
+vertical_under_22 = alt.Chart(pd.DataFrame({
+    'Year': [2022, 2022],  
+    'y': [renewable_2012, renewable_2022]  
+})).mark_line( 
+    color='gray',
+    strokeWidth=2
+).encode(
+    x=alt.X('Year:O', title=None),  
+    y='y:Q' 
+)
+
+
+vertical_text_22 = alt.Chart(pd.DataFrame({
+    'x': ['2022'],
+    'y': [(renewable_2012 + renewable_2022) / 2],
+    'text': [changes_text_12to22]
+})).mark_text(align='right', baseline='middle', dx=760, color='gray').encode(
+    x='x:N',
+    y='y:Q',
+    text='text:N'
+)
+
+line_rec_12to22_final = alt.layer(
+    vertical_under_22,
+    line_rec_12to22,
+    horizontal_line_12, 
+    vertical_text_22
+).properties(
+    title='Nationwide Renewable Energy (%) from 2012 to 2022', 
+    width=800,
+    height=400
+).configure_axis(
+    grid=False  
+).configure_axisY(
+    format='',  
+    title='Nationwide Renewable Energy (%)'  
+)
+
+line_rec_12to22_final
+```
+```{python}
+line_rec_12to22_total = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#000000'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Electricity production (billion kilowatt-hours):Q', title='Total Energy Production', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Electricity production (billion kilowatt-hours):Q', title='Total Energy Production', format='')
+    ]
+).properties(
+    title='Nationwide Total Energy Production from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_total
+```
+```{python}
+line_rec_12to22_thermal = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#8e1600'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Thermal (%):Q', title='Thermal Energy Fraction', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Thermal (%):Q', title='Thermal Energy Fraction', format='')
+    ]
+).properties(
+    title='Nationwide Thermal Energy Fraction from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_thermal
+```
+```{python}
+line_rec_12to22_hydro = alt.Chart(national_12to22).mark_line(point=True).encode(
+    color=alt.value('#2a9df4'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Hydro (%):Q', title='Hydro Energy Fraction', axis=alt.Axis(format='')),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Hydro (%):Q', title='Hydro Energy Fraction', format='')
+    ]
+).properties(
+    title='Nationwide Hydro Energy Fraction from 2012 to 2022', 
+    width=800,
+    height=400
+)
+
+line_rec_12to22_hydro
+```
+
+```{python}
+rec_path = './data/renewable_energy_china.csv'
+rec_data = pd.read_csv(rec_path)
+
+# Filter data for years from 2012 to 2022
+filtered_12to22 = rec_data[(rec_data['Year'] >= 2012) & (rec_data['Year'] <= 2022)]
+
+# Calculate renewable energy for each province
+province_12to22 = filtered_12to22.groupby(['Province', 'Year']).agg({
+    'Electricity production (billion kilowatt-hours)': 'sum',
+    'Hydropower (billion kilowatt-hours)': 'sum',
+    'Thermal power generation (billion kilowatt-hours)': 'sum'
+}).reset_index()
+
+province_12to22['Hydro (%)'] = (
+    province_12to22['Hydropower (billion kilowatt-hours)'] / 
+    province_12to22['Electricity production (billion kilowatt-hours)']
+)
+province_12to22['Thermal (%)'] = (
+    province_12to22['Thermal power generation (billion kilowatt-hours)'] / 
+    province_12to22['Electricity production (billion kilowatt-hours)']
+)
+province_12to22['Renewable energy (%)'] = (
+    (1 - province_12to22['Hydro (%)'] - province_12to22['Thermal (%)']) * 100
+)
+
+# Calculate nationwide renewable energy
+national_12to22 = filtered_12to22.groupby('Year').agg({
+    'Electricity production (billion kilowatt-hours)': 'sum',
+    'Hydropower (billion kilowatt-hours)': 'sum',
+    'Thermal power generation (billion kilowatt-hours)': 'sum'
+}).reset_index()
+
+national_12to22['Hydro (%)'] = (
+    national_12to22['Hydropower (billion kilowatt-hours)'] / 
+    national_12to22['Electricity production (billion kilowatt-hours)']
+)
+national_12to22['Thermal (%)'] = (
+    national_12to22['Thermal power generation (billion kilowatt-hours)'] / 
+    national_12to22['Electricity production (billion kilowatt-hours)']
+)
+national_12to22['Renewable energy (%)'] = (
+    (1 - national_12to22['Hydro (%)'] - national_12to22['Thermal (%)']) * 100
+)
+national_12to22['Province'] = 'Nationwide'
+
+# Combine nationwide and provincial data
+combined_data = pd.concat([province_12to22, national_12to22], ignore_index=True)
+
+```
+
+```{python}
+combined_data.to_csv("combined_data.csv", index = False)
+```
+
+```{python}
+cec_path = './data/carbon_emission_china.csv'
+cec_data = pd.read_csv(cec_path)
+
+cec_data.head()
+```
+
+
+```{python}
+filtered_cec_data = cec_data[(cec_data['Year'] >= 2012) & (cec_data['Year'] <= 2022)]
+
+# Group data by year and calculate total carbon emissions for each year
+national_cec_12to22 = filtered_cec_data.groupby('Year').agg({
+    'Carbon emissions (10,000 tons)': 'sum'
+}).reset_index()
+
+national_cec_12to22['Carbon emissions (billion tons)'] = national_cec_12to22['Carbon emissions (10,000 tons)']/100000
+
+# Create a line graph showing nationwide carbon emissions from 2012 to 2022
+cec_12to22_chart = alt.Chart(national_cec_12to22).mark_line(point=True).encode(
+    color=alt.value('#808080'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Carbon emissions (billion tons):Q', title='Nationwide Carbon Emissions (billion tons)'),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Carbon emissions (billion tons):Q', title='Carbon Emissions (billion tons)', format=',')
+    ]
+).properties(
+    title='Nationwide Carbon Emissions from 2012 to 2022',
+    width=800,
+    height=400
+)
+
+cec_12to22_chart
+```
+```{python}
+
+```
+```{python}
+gdp_path = './data/gdp_china.csv'
+gdp_data = pd.read_csv(gdp_path)
+```
+
+```{python}
+# Reshape the GDP data: converting wide format to long format
+gdp_data_reshaped = gdp_data.melt(id_vars=['Province'], var_name='Year', value_name='GDP')
+
+# Convert the Year column to integers for consistency
+gdp_data_reshaped['Year'] = gdp_data_reshaped['Year'].astype(int)
+
+# Display the reshaped DataFrame
+gdp_data_reshaped.head()
+```
+
+```{python}
+# Merge GDP data with carbon emissions data on Province and Year
+cec_gdp_merged = pd.merge(
+    gdp_data_reshaped,
+    filtered_cec_data,
+    on=['Province', 'Year']
+)
+
+# Calculate Carbon Emissions per GDP
+# Convert Carbon Emissions (10,000 tons) and GDP (100,000,000) into billions
+cec_gdp_merged['Carbon Emissions per GDP'] = (
+    cec_gdp_merged['Carbon emissions (10,000 tons)']*1000 / (cec_gdp_merged['GDP']*10000)
+)
+
+cec_gdp_merged
+```
+```{python}
+cec_gdp_merged.to_csv("gdp_merged.csv", index = False)
+```
+```{python}
+annual_carbon_per_gdp.to_csv("gdp_merged.csv", index = False)
+```
+```{python}
+# Aggregate carbon emissions per GDP for each year by summing up across provinces
+annual_carbon_per_gdp = cec_gdp_merged.groupby('Year').agg({
+    'Carbon Emissions per GDP': 'sum'
+}).reset_index()
+
+# Calculate the percentage decrease from 2012 to 2022
+cepg_2012 = annual_carbon_per_gdp[annual_carbon_per_gdp['Year'] == 2012]['Carbon Emissions per GDP'].values[0]
+cepg_2022 = annual_carbon_per_gdp[annual_carbon_per_gdp['Year'] == 2022]['Carbon Emissions per GDP'].values[0]
+percentage_decrease = ((cepg_2012 - cepg_2022) / cepg_2012) * 100
+percentage_text = f"{percentage_decrease:.2f}% decreased"
+
+# Create a line chart for Carbon Emissions per GDP from 2012 to 2022
+carbon_per_gdp_chart = alt.Chart(annual_carbon_per_gdp).mark_line(point=True).encode(
+    color=alt.value('#cc0000'),
+    x=alt.X('Year:O', title='Year'),
+    y=alt.Y('Carbon Emissions per GDP:Q', title='Carbon Emissions per GDP (kg)'),
+    tooltip=[
+        alt.Tooltip('Year:O', title='Year'),
+        alt.Tooltip('Carbon Emissions per GDP:Q', title='Carbon Emissions per GDP (kg)', format=',.2f')
+    ]
+)
+
+# Create the horizontal dashed line
+horizontal_cepg = alt.Chart(pd.DataFrame({
+    'Year': annual_carbon_per_gdp['Year'], 
+    'y': [cepg_2012]*len(annual_carbon_per_gdp)  
+})).mark_line(
+    strokeDash=[4, 4],
+    color='gray'
+).encode(
+    x='Year:O',
+    y='y:Q'
+)
+
+# Create the vertical solid line
+vertical_cepg = alt.Chart(pd.DataFrame({
+    'Year': [2022, 2022], 
+    'y': [cepg_2012, cepg_2022]  
+})).mark_line(
+    color='gray',
+    strokeWidth=2
+).encode(
+    x=alt.X('Year:O', title=None),
+    y='y:Q'
+)
+
+# Add text annotation for the percentage decrease
+text_cepg = alt.Chart(pd.DataFrame({
+    'Year': ['2012'],
+    'y': [(cepg_2012 + cepg_2022) / 2],
+    'text': [percentage_text]
+})).mark_text(
+    align='right',
+    baseline='middle',
+    dx=760,
+    color='gray'
+).encode(
+    x='Year:O',
+    y='y:Q',
+    text='text:N'
+)
+
+# Combine the bar chart with annotations
+cepg_chart_final = alt.layer(
+    carbon_per_gdp_chart,  
+    horizontal_cepg,           
+    vertical_cepg,            
+    text_cepg 
+).properties(
+    title='Nationwide Carbon Emissions per GDP from 2012 to 2022',
+    width=800,
+    height=400
+)
+
+cepg_chart_final
+```
+```{python}
+annual_carbon_per_gdp.to_csv("carbon_annual.csv", index = False)
+```
+
+```{python}
+# Calculate the total production values for each province over the 10-year period (2012-2022)
+rec_data_filtered = rec_data[(rec_data['Year'] >= 2012) & (rec_data['Year'] <= 2022)]
+
+# Group by Province and sum the necessary values
+provincial_totals = rec_data_filtered.groupby('Province').agg({
+    'Electricity production (billion kilowatt-hours)': 'sum',
+    'Hydropower (billion kilowatt-hours)': 'sum',
+    'Thermal power generation (billion kilowatt-hours)': 'sum'
+}).reset_index()
+
+# Calculate Hydro (%) and Thermal (%) for each province
+provincial_totals['Hydro (%)'] = (
+    provincial_totals['Hydropower (billion kilowatt-hours)'] / 
+    provincial_totals['Electricity production (billion kilowatt-hours)']
+)
+provincial_totals['Thermal (%)'] = (
+    provincial_totals['Thermal power generation (billion kilowatt-hours)'] / 
+    provincial_totals['Electricity production (billion kilowatt-hours)']
+)
+
+# Calculate Renewable energy (%) for each province
+provincial_totals['Renewable energy (%)'] = (
+    1 - provincial_totals['Hydro (%)'] - provincial_totals['Thermal (%)']
+)*100
+
+
+
+# Merge renewable energy data with the carbon emissions and GDP data
+rec_cec_gdp_data = pd.merge(
+    rec_data,
+    cec_gdp_merged,
+    on=['Province', 'Year']
+)
+
+# Group by Province and calculate the average for Renewable energy (%) and Carbon Emissions per GDP
+rec_cec_gpd_data_cal_mean = rec_cec_gdp_data.groupby('Province').agg({
+    'Carbon Emissions per GDP': 'mean'
+}).reset_index()
+
+# Merge the calculated renewable energy data with the carbon emissions per GDP data
+merged_full_data = pd.merge(
+    provincial_totals[['Province', 'Renewable energy (%)']],
+    rec_cec_gpd_data_cal_mean[['Province', 'Carbon Emissions per GDP']],
+    on='Province'
+)
+
+merged_full_data
+```
+
+```{python}
+# Create a scatter plot for the relationship
+scatter_plot = alt.Chart(merged_full_data).mark_circle(size=800).encode(
+    color=alt.value('#66c2a4'),
+    x=alt.X(
+        'Renewable energy (%):Q', 
+        title='Renewable Energy (%)'
+    ),
+    y=alt.Y(
+        'Carbon Emissions per GDP:Q', 
+        title='Average Carbon Emissions per GDP (kg)'
+    ),
+    tooltip=['Province', 'Renewable energy (%)', 'Carbon Emissions per GDP']
+).properties(
+    title='Relation between Renewable Energy (%) and Carbon Emissions per GDP by Province (2012-2022)',
+    width=1600,
+    height=400
+)
+
+province_labels = alt.Chart(merged_full_data).mark_text(
+    align='center',
+    baseline='middle',
+    dx=0,
+    size=4.8
+).encode(
+    x='Renewable energy (%):Q',
+    y='Carbon Emissions per GDP:Q',
+    text='Province',
+    tooltip=['Province', 'Renewable energy (%)', 'Carbon Emissions per GDP']
+)
+
+# Combine scatter plot and labels
+scatter_plot_final = scatter_plot + province_labels
+
+scatter_plot_final = scatter_plot_final.configure_axis(
+    grid=False
+)
+
+scatter_plot_final
+```
+
+```{python}
+# Load the shapefile and renewable energy data
+province_shp_path = "./data/Province/province.shp" 
+china_map = gpd.read_file(province_shp_path)
+
+china_map
+```
+
+```{python}
+province_shp_path = "./data/Province/province.shp" 
+china_map = gpd.read_file(province_shp_path)
+
+# Step 1: Translate the `pr_name` column from Chinese to English
+translator = Translator()
+china_map["pr_name_en"] = china_map["pr_name"].apply(
+    lambda x: translator.translate(x, src="zh-CN", dest="en").text
+)
+
+# Step 2: Replace province names using a comprehensive dictionary
+replacements = {
+    "Beijing City": "Beijing",
+    "Tianjin City": "Tianjin",
+    "Shanghai City": "Shanghai",
+    "Chongqing City": "Chongqing",
+    "Inner Mongolia Autonomous Region": "Inner Mongolia",
+    "Guangxi Zhuang Autonomous Region": "Guangxi",
+    "Tibet Autonomous Region": "Tibet",
+    "Ningxia Hui Autonomous Region": "Ningxia",
+    "Xinjiang Uygur Autonomous Region": "Xinjiang",
+    "Hong Kong Special Administrative Region": "Hong Kong",
+    "Macau Special Administrative Region": "Macau",
+    "Taiwan province": "Taiwan",
+    "Hebei Province": "Hebei",
+    "Shanxi Province": "Shanxi",
+    "Liaoning Province": "Liaoning",
+    "Jilin Province": "Jilin",
+    "Heilongjiang Province": "Heilongjiang",
+    "Jiangsu Province": "Jiangsu",
+    "Zhejiang Province": "Zhejiang",
+    "Anhui Province": "Anhui",
+    "Fujian Province": "Fujian",
+    "Jiangxi Province": "Jiangxi",
+    "Shandong Province": "Shandong",
+    "Henan Province": "Henan",
+    "Hubei Province": "Hubei",
+    "Hunan Province": "Hunan",
+    "Guangdong Province": "Guangdong",
+    "Hainan Province": "Hainan",
+    "Sichuan Province": "Sichuan",
+    "Guizhou Province": "Guizhou",
+    "Yunnan Province": "Yunnan",
+    "Shaanxi Province": "Shaanxi",
+    "Gansu Province": "Gansu",
+    "Qinghai Province": "Qinghai",
+}
+
+# Apply the replacements
+china_map["pr_name_en"] = china_map["pr_name_en"].replace(replacements)
+
+# Step 3: Rename the column to "Province"
+china_map_translated = china_map.rename(columns={"pr_name_en": "Province"})
+
+# Optional: Save the updated GeoDataFrame to a new shapefile
+china_map_translated.to_file("./data/Province/translated_province.shp", driver="ESRI Shapefile")
+
+# Display the updated GeoDataFrame
+china_map_translated
+
+```
+
+```{python}
+province_shp_path = "./data/Province/translated_province.shp"
+china_map_translated = gpd.read_file(province_shp_path)
+
+# Merge shapefile with renewable energy data
+china_map_renewable = china_map_translated.merge(
+    merged_full_data[['Province', 'Renewable energy (%)']],
+    on="Province",
+    how="left"
+)
+
+# Convert GeoDataFrame to GeoJSON
+china_map_geojson = china_map_renewable.to_crs(epsg=4326).__geo_interface__
+
+# Create Altair chart
+rec_map_chart = alt.Chart(alt.Data(values=china_map_geojson["features"])).mark_geoshape(
+    stroke='black'
+).encode(
+    color=alt.Color(
+        'properties.Renewable energy (%):Q',
+        scale=alt.Scale(scheme='greens'),
+        title='Renewable Energy (%)'
+    ),
+    tooltip=[
+        alt.Tooltip('properties.Province:N', title='Province'),
+        alt.Tooltip('properties.Renewable energy (%):Q', title='Renewable Energy (%)', format='.2f')
+    ]
+).project(
+    type='mercator'
+).properties(
+    width=800,
+    height=600,
+    title="10-Year Average Renewable Energy (%) by Province (2012-2022)"
+)
+
+rec_map_chart
+```
+
+```{python}
+# Merge shapefile with carbon emissions per GDP data
+china_map_carbon = china_map_translated.merge(
+    merged_full_data[['Province', 'Carbon Emissions per GDP']],
+    on="Province",
+    how="left"
+)
+
+# Convert GeoDataFrame to GeoJSON
+china_map_carbon_geojson = china_map_carbon.to_crs(epsg=4326).__geo_interface__
+
+# Create Altair chart for Carbon Emissions per GDP
+cec_map_chart = alt.Chart(alt.Data(values=china_map_carbon_geojson["features"])).mark_geoshape(
+    stroke='black'
+).encode(
+    color=alt.Color(
+        'properties.Carbon Emissions per GDP:Q',
+        scale=alt.Scale(scheme='reds'), # or replace with grays
+        title='Carbon Emissions per GDP'
+    ),
+    tooltip=[
+        alt.Tooltip('properties.Province:N', title='Province'),
+        alt.Tooltip('properties.Carbon Emissions per GDP:Q', title='Carbon Emissions per GDP', format='.2f')
+    ]
+).project(
+    type='mercator'
+).properties(
+    width=800,
+    height=600,
+    title="10-Year Average Carbon Emissions per GDP by Province (2012-2022)"
+)
+
+cec_map_chart
+```
+```{python}
+file_sentiment = './data/sentiment_analysis_results.csv'
+df_sentiments = pd.read_csv(file_sentiment)
+df_sentiments['year'] = df_sentiments['filename'].str.extract(r'(\d{4})').astype(int)
+```
+```{python}
+score_chart = alt.Chart(df_sentiments).mark_line(point=True).encode(
+    color=alt.value('#cc0000'),
+    x=alt.X('year:O', title='Year'),
+    y=alt.Y('score:Q', title='Sentiment Score'),
+    tooltip=[
+        alt.Tooltip('filename:O', title='Year'),
+        alt.Tooltip('score:Q', title='Sentiment Score', format=',.2f')
+    ]
+).properties(
+    title='Sentiment Scores Over the Years',
+    width=600,
+    height=400
+)
+score_chart
+```
+The link to the finetuned bert model is on the drive https://drive.google.com/drive/folders/1ABBAj0q0FpWj9zlk0-HfOOfo6XHfRGf1?usp=sharing, 
+as well as the necessary coding setups.

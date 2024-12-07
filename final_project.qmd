@@ -8,7 +8,6 @@ execute:
   echo: false
 ---
 
-# Import Packages
 ```{python}
 import pandas as pd
 import geopandas as gpd
@@ -20,7 +19,6 @@ from googletrans import Translator
 import os
 ```
 
-# Renewable Energy (%) by Province (2012 and 2022)
 ```{python}
 rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
@@ -76,7 +74,6 @@ overlay_rec_2012_2022_chart = overlay_rec_2012_2022_chart.properties(
 overlay_rec_2012_2022_chart
 ```
 
-# Nationwide Renewable Energy (%) from 2012 to 2022
 ```{python}
 rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
@@ -220,7 +217,6 @@ line_rec_12to22_hydro = alt.Chart(national_12to22).mark_line(point=True).encode(
 line_rec_12to22_hydro
 ```
 
-# Renewable Energy (%) from 2012 to 2022: Nationwide and Provinces Interactively
 ```{python}
 rec_path = './data/renewable_energy_china.csv'
 rec_data = pd.read_csv(rec_path)
@@ -275,68 +271,7 @@ combined_data = pd.concat([province_12to22, national_12to22], ignore_index=True)
 ```{python}
 combined_data.to_csv("combined_data.csv", index = False)
 ```
-```{python}
-# not sure how to code this part
-app_code="""
-from shiny import App, render, ui
-import pandas as pd
-import altair as alt
 
-# Define UI
-app_ui = ui.page_fluid(
-    ui.h2("Renewable Energy (%) from 2012 to 2022"),
-    ui.input_select(
-        id="province_select", 
-        label="Select Province", 
-        choices=["Nationwide"] + sorted(combined_data['Province'].unique())
-    ),
-    ui.output_plot("renewable_plot")
-)
-
-# Define Server Logic
-def server(input, output, session):
-    @output
-    @render.plot
-    def renewable_plot():
-        # Get the selected province
-        selected_province = input.province_select()
-
-        # Filter data for the selected province
-        if selected_province == "Nationwide":
-            plot_data = national_12to22  # Use nationwide data
-        else:
-            plot_data = combined_data[combined_data['Province'] == selected_province]
-
-        # Convert plot_data to a proper DataFrame
-        plot_data = plot_data.reset_index(drop=True)
-
-        # Create Altair line plot
-        chart = alt.Chart(plot_data).mark_line(point=True).encode(
-            x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Renewable energy (%):Q', title='Renewable Energy (%)'),
-            tooltip=[
-                alt.Tooltip('Year:O', title='Year'),
-                alt.Tooltip('Renewable energy (%):Q', title='Renewable Energy (%)', format='.2f')
-            ]
-        ).properties(
-            title=f"Renewable Energy (%) for {selected_province} (2012-2022)",
-            width=800,
-            height=400
-        )
-        return chart
-
-# Create App
-app = App(app_ui, server)
-"""
-
-with open ("D:/Github/Final-Project-Cedar-and-Shuping/app.py", "w") as file:
-    file.write(rec_app_code)
-
-print("app.py has been saved successfully.")
-
-```
-
-# Nationwide Carbon Emissions from 2012 to 2022
 ```{python}
 cec_path = './data/carbon_emission_china.csv'
 cec_data = pd.read_csv(cec_path)
@@ -375,7 +310,6 @@ cec_12to22_chart
 ```{python}
 
 ```
-# Nationwide Carbon Emissions per GDP from 2012 to 2022
 ```{python}
 gdp_path = './data/gdp_china.csv'
 gdp_data = pd.read_csv(gdp_path)
@@ -495,7 +429,6 @@ cepg_chart_final
 annual_carbon_per_gdp.to_csv("carbon_annual.csv", index = False)
 ```
 
-# Relationship between Renewable Energy (%) and Carbon Emissions per GDP by Province (2012-2022)
 ```{python}
 # Calculate the total production values for each province over the 10-year period (2012-2022)
 rec_data_filtered = rec_data[(rec_data['Year'] >= 2012) & (rec_data['Year'] <= 2022)]
@@ -587,7 +520,6 @@ scatter_plot_final = scatter_plot_final.configure_axis(
 scatter_plot_final
 ```
 
-# 10-Year Average Renewable Energy (%) by Province (2012-2022)
 ```{python}
 # Load the shapefile and renewable energy data
 province_shp_path = "./data/Province/province.shp" 
@@ -696,7 +628,6 @@ rec_map_chart = alt.Chart(alt.Data(values=china_map_geojson["features"])).mark_g
 rec_map_chart
 ```
 
-# 10-Year Carbon Emissions per GDP by Province (2012-2022)
 ```{python}
 # Merge shapefile with carbon emissions per GDP data
 china_map_carbon = china_map_translated.merge(
